@@ -5,6 +5,8 @@ use warnings;
 
 use Linux::Joystick;
 
+$| = 1; # autoflushing STDOUT
+
 my $max_dev_js = 8;
 
 my $js;
