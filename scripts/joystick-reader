@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Linux::Joystick;
+
+my $max_dev_js = 8;
+
+my $js;
+for( my $i = 0; $i <= $max_dev_js ; $i++ ) {
+    $js = Linux::Joystick->new( $i );
+    next if !defined $js;
+    print "# Joystick $i has " . $js->buttonCount() . ' buttons and ' .
+          $js->axisCount() . " axes.\n";
+    last;
+}
+
+if( !defined $js ) {
+    die "$0: none of joysticks 0-$max_dev_js were found";
+}
+
+my $event;
+
+# blocking reads:
+while( $event = $js->nextEvent ) {
+    print $event->type, "\t";
+    if( $event->isButton ) {
+        print $event->button;
+        if( $event->buttonDown ) {
+            print 'PRESS';
+        } else {
+            print 'RELEASE';
+        }
+    } elsif( $event->isAxis ) {
+        print $event->axis, "\t", $event->axisValue, "\t";
+        print 'UP' if $event->stickUp;
+        print 'DOWN' if $event->stickDown;
+        print 'LEFT' if $event->stickLeft;
+        print 'RIGHT' if $event->stickRight;
+    } else { # should never happen
+        print "UNKNOWN\t", $event->hexDump;
+    }
+    print "\n";
+}
+
+# if the while loop terminates, we got a false (undefined) event:
+die "$0: ERROR, " . $js->errorString;
