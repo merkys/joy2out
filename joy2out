@@ -26,7 +26,7 @@ my $event;
 while( $event = $js->nextEvent ) {
     print $event->type, "\t";
     if( $event->isButton ) {
-        print $event->button;
+        print $event->button, "\t";
         if( $event->buttonDown ) {
             print 'PRESS';
         } else {
