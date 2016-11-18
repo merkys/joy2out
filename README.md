@@ -1,5 +1,5 @@
-joystick-reader
-===============
+joy2out
+=======
 
 Reads events from joystick and prints them to STDOUT.
 
