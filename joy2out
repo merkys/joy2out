@@ -22,7 +22,7 @@ for( my $i = 0; $i <= $max_dev_js ; $i++ ) {
     print "# Joystick $i has " . $js->buttonCount() . ' buttons and ' .
           $js->axisCount() . " axes.\n";
     $stdout->up(); # releasing a lock on STDOUT
-    my $thread = threads->create( \&read_joystick, $js );
+    my $thread = threads->create( \&read_joystick, $js, $i );
     push @threads, $thread;
 }
 
@@ -36,12 +36,12 @@ for (@threads) {
 
 sub read_joystick
 {
-    my( $js ) = @_;
+    my( $js, $id ) = @_;
 
     # blocking reads:
     while( my $event = $js->nextEvent ) {
         $stdout->down(); # acquiring a lock on STDOUT
-        print $event->type, "\t";
+        print $id, "\t", $event->type, "\t";
         if( $event->isButton ) {
             print $event->button, "\t";
             if( $event->buttonDown ) {
